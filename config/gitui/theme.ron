@@ -1,0 +1,23 @@
+(
+    selected_tab: Some("Reset"),
+    command_fg: Some("#e5e5e5"),
+    selection_bg: Some("#6c6f93"),
+    selection_fg: Some("#e5e5e5"),
+    cmdbar_bg: Some("#1c1e26"),
+    cmdbar_extra_lines_bg: Some("#1c1e26"),
+    disabled_fg: Some("#6c6f93"),
+    diff_line_add: Some("#29d398"),
+    diff_line_delete: Some("#e95678"),
+    diff_file_added: Some("#29d398"),
+    diff_file_removed: Some("#e95678"),
+    diff_file_moved: Some("#B877DB"),
+    diff_file_modified: Some("#fab795"),
+    commit_hash: Some("#B877DB"),
+    commit_time: Some("#26bbd9"),
+    commit_author: Some("#ee64ac"),
+    danger_fg: Some("#e95678"),
+    push_gauge_bg: Some("#6c6f93"),
+    push_gauge_fg: Some("#e5e5e5"),
+    tag_fg: Some("#fab795"),
+    branch_fg: Some("#29d398")
+)
