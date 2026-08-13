@@ -5,8 +5,8 @@ return {
         opts = {
             -- Define formatters per filetype
             formatters_by_ft = {
-                -- Run isort first, then black sequentially
-                python = { "isort", "black" },
+                -- Run ruff to organize imports first, then format
+                python = { "ruff_organize_imports", "ruff_format" },
                 -- Uses standard rustfmt (matches `cargo fmt`)
                 rust = { "rustfmt" },
             },
