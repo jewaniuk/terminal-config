@@ -1,0 +1,52 @@
+# =============================================================================
+# ENV & PATH
+# =============================================================================
+export PATH="/opt/homebrew/bin:$PATH"
+
+# make neovim the default editor for everything (git commits, etc.)
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# =============================================================================
+# HISTORY SETTINGS
+# =============================================================================
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt APPEND_HISTORY          # append to history file, don't overwrite
+setopt SHARE_HISTORY           # share history across all open terminal tabs
+setopt HIST_IGNORE_DUPS        # don't record an event that was just recorded again
+setopt HIST_IGNORE_SPACE       # don't record commands that start with a space
+
+# =============================================================================
+# ALIASES
+# =============================================================================
+alias vim="nvim"
+alias vi="nvim"
+alias ls="ls -G"               # colorized ls
+alias ll="ls -lhG"             # detailed list view
+
+# =============================================================================
+# CUSTOM FUNCTIONS
+# =============================================================================
+# automatically run git fetch only when entering the root of a git repo
+chpwd() {
+    if [ "$(git rev-parse --show-cdup 2>/dev/null)" = "" ] && git rev-parse --is-inside-work-tree &>/dev/null; then
+        git fetch --quiet &!
+    fi
+}
+
+# =============================================================================
+# PLUGINS & INTEGRATIONS
+# =============================================================================
+# 1. zsh-autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# 2. zsh-syntax-highlighting (must be sourced near the very end)
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# 3. fzf integration (provides fuzzy finding for Ctrl+R and ** tab completion)
+source <(fzf --zsh)
+
+# 4. Starship Prompt (must be the last thing initialized)
+eval "$(starship init zsh)"

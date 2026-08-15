@@ -19,5 +19,6 @@ ln -sf ~/.dotfiles/config/nvim ~/.config/nvim
 ln -sf ~/.dotfiles/config/ghostty ~/.config/ghostty
 ln -sf ~/.dotfiles/config/gitui ~/.config/gitui
 ln -sf ~/.dotfiles/config/starship.toml ~/.config/starship.toml
+ln -sf ~/.dotfiles/config/zshrc ~/.zshrc
 
 echo "✨ environment setup complete!"
