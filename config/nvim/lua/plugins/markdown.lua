@@ -14,7 +14,7 @@ return {
             },
             checkbox = {
                 unchecked = { icon = '□ ' }, -- High-contrast unfilled box
-                checked = { icon = '■ ' },   -- High-contrast filled box
+                checked = { icon = '■ ' }, -- High-contrast filled box
             },
         },
         keys = {

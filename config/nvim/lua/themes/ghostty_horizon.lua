@@ -11,11 +11,20 @@ function M.setup()
     local hl = vim.api.nvim_set_hl
 
     local c = {
-        bg = "#1c1e26", fg = "#d5d8da", selection = "#6c6f93",
-        cursor = "#e5e5e5", keyword = "#ee64ac", func = "#29d398",
-        string = "#fab795", type = "#B877DB", num = "#26bbd9",
-        text_var_op = "#e5e5e5", comment = "#6c6f93",
-        error = "#e95678", warning = "#fab795",
+        bg = "#1c1e26",
+        fg = "#d5d8da",
+        selection = "#6c6f93",
+        cursor = "#e5e5e5",
+        keyword = "#ee64ac",
+        func = "#29d398",
+        string = "#fab795",
+        type = "#B877DB",
+        num = "#26bbd9",
+        text_var_op = "#e5e5e5",
+        comment = "#6c6f93",
+        error = "#e95678",
+        warning = "#fab795",
+        md_code_bg = "#181a21",
     }
 
     -- 1. Base Editor UI
@@ -95,16 +104,18 @@ function M.setup()
     hl(0, "DiagnosticUnnecessary", { fg = c.comment, sp = c.num, undercurl = true })
 
     -- 11. Markdown
-    hl(0, "@markup.heading.1", { fg = c.keyword, bold = true }) -- Pink
-    hl(0, "@markup.heading.2", { fg = c.func, bold = true })    -- Green
-    hl(0, "@markup.heading.3", { fg = c.string, bold = true })  -- Orange
-    hl(0, "@markup.heading.4", { fg = c.type, bold = true })    -- Purple
-    hl(0, "@markup.heading.5", { fg = c.num, bold = true })     -- Cyan
-    hl(0, "@markup.heading.6", { fg = c.fg, bold = true })      -- Default text color
+    hl(0, "@markup.heading.1", { fg = c.keyword, bold = true })       -- Pink
+    hl(0, "@markup.heading.2", { fg = c.func, bold = true })          -- Green
+    hl(0, "@markup.heading.3", { fg = c.string, bold = true })        -- Orange
+    hl(0, "@markup.heading.4", { fg = c.type, bold = true })          -- Purple
+    hl(0, "@markup.heading.5", { fg = c.num, bold = true })           -- Cyan
+    hl(0, "@markup.heading.6", { fg = c.fg, bold = true })            -- Default text color
 
-    hl(0, "@markup.list", { fg = c.num })      -- Cyan bullet points
-    hl(0, "@markup.raw", { fg = c.comment })   -- Greyed out inline code (`code`)
-    hl(0, "@markup.link", { fg = c.func })     -- Green hyperlinks
+    hl(0, "@markup.list", { fg = c.num })                             -- Cyan bullet points
+    hl(0, "@markup.raw", { fg = c.string, bg = c.bg, italic = true }) -- Bright inline code (`code`)
+    hl(0, "@markup.link", { fg = c.func })                            -- Green hyperlinks
+
+    hl(0, "RenderMarkdownCode", { bg = c.md_code_bg })                -- Disable render-markdown.nvim hazy background blocks
 end
 
 return M
