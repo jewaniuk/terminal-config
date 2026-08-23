@@ -32,6 +32,8 @@ brew "tree-sitter-cli"
 brew "uv"
 # Simple terminal image viewer written in Rust
 brew "viu"
+# A smarter cd command for navigating directories in the terminal
+brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
 # Fish-like fast/unobtrusive autosuggestions for zsh

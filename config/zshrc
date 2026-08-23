@@ -39,14 +39,17 @@ chpwd() {
 # =============================================================================
 # PLUGINS & INTEGRATIONS
 # =============================================================================
-# 1. zsh-autosuggestions
+# zsh-autosuggestions
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# 2. zsh-syntax-highlighting (must be sourced near the very end)
+# zsh-syntax-highlighting (must be sourced near the very end)
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# 3. fzf integration (provides fuzzy finding for Ctrl+R and ** tab completion)
+# fzf integration (provides fuzzy finding for Ctrl+R and ** tab completion)
 source <(fzf --zsh)
 
-# 4. Starship Prompt (must be the last thing initialized)
+# zoxide
+eval "$(zoxide init zsh --cmd cd)"
+
+# Starship Prompt (must be the last thing initialized)
 eval "$(starship init zsh)"
