@@ -53,3 +53,7 @@ eval "$(zoxide init zsh --cmd cd)"
 
 # Starship Prompt (must be the last thing initialized)
 eval "$(starship init zsh)"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/jewaniuk/.local/bin:$PATH"

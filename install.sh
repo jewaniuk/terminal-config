@@ -10,6 +10,10 @@ fi
 echo "installing dependencies..."
 brew bundle --file=~/.dotfiles/Brewfile
 
+# install google antigravity cli
+echo "installing antigravity cli..."
+curl -fsSL https://antigravity.google/cli/install.sh | bash
+
 # create ~/.config directory if it doesn't exist
 mkdir -p ~/.config
 
