@@ -26,6 +26,7 @@ return {
 
             local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+            -- Arduino Configuration
             vim.lsp.config.arduino_language_server = {
                 cmd = {
                     "arduino-language-server",
@@ -33,21 +34,10 @@ return {
                     "-cli", "arduino-cli",
                     "-clangd", "clangd"
                 },
-                capabilities = capabilities,
             }
 
-            local servers = {
-                "rust_analyzer", "clangd",
-                "arduino_language_server", "zls", "ols",
-                "lua_ls", "marksman",
-            }
-
-            for _, lsp in ipairs(servers) do
-                vim.lsp.enable(lsp)
-            end
-
-            require("lspconfig").pyright.setup({
-                capabilities = capabilities,
+            -- Pyright Configuration
+            vim.lsp.config.pyright = {
                 settings = {
                     python = {
                         analysis = {
@@ -59,7 +49,37 @@ return {
                         }
                     }
                 }
-            })
+            }
+
+            -- Lua Language Server Configuration
+            vim.lsp.config.lua_ls = {
+                settings = {
+                    Lua = {
+                        diagnostics = {
+                            globals = { "vim" }
+                        }
+                    }
+                }
+            }
+
+            -- Enable All Servers and Inject Capabilities
+            local servers = {
+                "pyright", "rust_analyzer", "clangd",
+                "arduino_language_server", "zls", "ols",
+                "lua_ls", "marksman",
+            }
+
+            for _, lsp in ipairs(servers) do
+                -- Initialize the config table if it wasn't defined above, then inject capabilities
+                if not vim.lsp.config[lsp] then
+                    vim.lsp.config[lsp] = { capabilities = capabilities }
+                else
+                    vim.lsp.config[lsp].capabilities = capabilities
+                end
+
+                -- Natively enable the server
+                vim.lsp.enable(lsp)
+            end
 
             -- LSP Keymaps
             vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'hover documentation' })
