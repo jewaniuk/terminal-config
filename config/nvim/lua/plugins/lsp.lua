@@ -37,7 +37,7 @@ return {
             }
 
             local servers = {
-                "pyright", "rust_analyzer", "clangd",
+                "rust_analyzer", "clangd",
                 "arduino_language_server", "zls", "ols",
                 "lua_ls", "marksman",
             }
@@ -45,6 +45,21 @@ return {
             for _, lsp in ipairs(servers) do
                 vim.lsp.enable(lsp)
             end
+
+            require("lspconfig").pyright.setup({
+                capabilities = capabilities,
+                settings = {
+                    python = {
+                        analysis = {
+                            typeCheckingMode = "basic",
+                            diagnosticSeverityOverrides = {
+                                reportUnusedImport = "warning",
+                                reportUnusedVariable = "warning",
+                            }
+                        }
+                    }
+                }
+            })
 
             -- LSP Keymaps
             vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'hover documentation' })
