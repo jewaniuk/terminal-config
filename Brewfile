@@ -46,3 +46,5 @@ cask "font-fantasque-sans-mono-nerd-font"
 cask "ghostty"
 # Move and resize windows using keyboard shortcuts or snap areas
 cask "rectangle"
+# Tiling window manager
+cask "nikitabobko/tap/aerospace"
