@@ -16,8 +16,12 @@ curl -fsSL https://antigravity.google/cli/install.sh | bash
 
 # create ~/.config directories if they don't exist
 mkdir -p ~/.config
+mkdir -p ~/.config/nvim
+mkdir -p ~/.config/ghostty
+mkdir -p ~/.config/gitui
 mkdir -p ~/.config/aerospace
 mkdir -p ~/.config/borders
+mkdir -p ~/.config/fastfetch
 
 # create symlinks for configurations
 echo "creating symlinks..."
@@ -28,6 +32,7 @@ ln -sf ~/.dotfiles/config/starship.toml ~/.config/starship.toml
 ln -sf ~/.dotfiles/config/zshrc ~/.zshrc
 ln -sf ~/.dotfiles/config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 ln -sf ~/.dotfiles/config/borders/bordersrc ~/.config/borders/bordersrc
+ln -sf ~/.dotfiles/config/fastfetch/config.jsonc ~/.config/fastfetch/config.jsonc
 
 # create file that disables top message on new terminal windows
 touch ~/.hushlogin

@@ -40,6 +40,8 @@ brew "zsh"
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+# Command to fetch system information
+brew "fastfetch"
 # Border-drawing daemon for focused/unfocused window highlighting
 tap "FelixKratz/formulae"
 brew "FelixKratz/formulae/borders"
