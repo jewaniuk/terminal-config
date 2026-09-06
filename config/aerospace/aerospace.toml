@@ -60,6 +60,7 @@ alt-shift-5 = "move-node-to-workspace 5 --focus-follows-window"
 
 alt-f = "fullscreen"
 alt-shift-c = "reload-config"
+alt-equal = "balance-sizes"
 alt-shift-space = "layout floating tiling"  # toggle current window float/tile
 alt-slash = "layout tiles horizontal vertical"  # toggle split orientation
 alt-r = "mode resize"  # enter the resize submode
@@ -68,10 +69,10 @@ alt-r = "mode resize"  # enter the resize submode
 # a separate mode where hjkl resize instead of focus while it's active
 # press alt-r to enter, enter/esc to leave
 [mode.resize.binding]
-h = "resize width +50"
+h = "resize width -50"
 j = "resize height -50"
 k = "resize height +50"
-l = "resize width -50"
+l = "resize width +50"
 enter = "mode main"
 esc = "mode main"
 
