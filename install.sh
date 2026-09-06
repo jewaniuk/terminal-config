@@ -14,9 +14,10 @@ brew bundle --file=~/.dotfiles/Brewfile
 echo "installing antigravity cli..."
 curl -fsSL https://antigravity.google/cli/install.sh | bash
 
-# create ~/.config directory if it doesn't exist, as well as ~/.config/aerospace
+# create ~/.config directories if they don't exist
 mkdir -p ~/.config
 mkdir -p ~/.config/aerospace
+mkdir -p ~/.config/borders
 
 # create symlinks for configurations
 echo "creating symlinks..."
@@ -26,5 +27,9 @@ ln -sf ~/.dotfiles/config/gitui ~/.config/gitui
 ln -sf ~/.dotfiles/config/starship.toml ~/.config/starship.toml
 ln -sf ~/.dotfiles/config/zshrc ~/.zshrc
 ln -sf ~/.dotfiles/config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
+ln -sf ~/.dotfiles/config/borders/bordersrc ~/.config/borders/bordersrc
+
+# create file that disables top message on new terminal windows
+touch ~/.hushlogin
 
 echo "✨ environment setup complete!"

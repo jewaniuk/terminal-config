@@ -40,6 +40,9 @@ brew "zsh"
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+# Border-drawing daemon for focused/unfocused window highlighting
+tap "FelixKratz/formulae"
+brew "FelixKratz/formulae/borders"
 # Nerd font
 cask "font-fantasque-sans-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
