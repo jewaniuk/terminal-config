@@ -51,3 +51,5 @@ cask "font-fantasque-sans-mono-nerd-font"
 cask "ghostty"
 # Tiling window manager
 cask "nikitabobko/tap/aerospace"
+# Focused launcher, replacement for spotlight
+cask "vicinae"
