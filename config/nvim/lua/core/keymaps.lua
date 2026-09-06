@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+local cmd = vim.api.nvim_create_user_command
 
 -- Window Navigation
 map('n', '<C-h>', '<C-w>h', { desc = 'jump to left window' })
@@ -26,3 +27,13 @@ map('n', '<leader>p', 'o<C-r>+<Esc>', { desc = 'Paste below from clipboard' })
 -- Add empty lines above/below (cursor moves to the new line)
 map('n', '<leader>o', 'o<Esc>', { desc = 'Add blank line below' })
 map('n', '<leader>O', 'O<Esc>', { desc = 'Add blank line above' })
+
+-- Map W & Q to match the behaviour of w & q
+cmd('W', 'w', {})
+cmd('Q', 'q', {})
+cmd('WQ', 'wq', {})
+cmd('Wq', 'wq', {})
+cmd('W', 'w<bang>', { bang = true })
+cmd('Q', 'q<bang>', { bang = true })
+cmd('WQ', 'wq<bang>', { bang = true })
+cmd('Wq', 'wq<bang>', { bang = true })
