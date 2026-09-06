@@ -49,7 +49,5 @@ brew "FelixKratz/formulae/borders"
 cask "font-fantasque-sans-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Move and resize windows using keyboard shortcuts or snap areas
-cask "rectangle"
 # Tiling window manager
 cask "nikitabobko/tap/aerospace"
