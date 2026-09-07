@@ -49,8 +49,32 @@ chmod +x ~/.dotfiles/scripts/wallpaper-shuffle.sh
 chmod +x ~/.dotfiles/scripts/wallpaper-shuffle-trigger.sh
 chmod +x ~/.dotfiles/scripts/shuffle-wallpaper.sh
 
-# symlink the launch agent and vicinae script command
-ln -sf ~/.dotfiles/launchagents/com.jewaniuk.wallpapershuffle.plist ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist
+# generate the wallpaper-shuffle LaunchAgent for this machine
+cat > ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.jewaniuk.wallpapershuffle</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>$HOME/.dotfiles/scripts/wallpaper-shuffle.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>$HOME/.local/state/wallpaper-shuffle/daemon.log</string>
+    <key>StandardErrorPath</key>
+    <string>$HOME/.local/state/wallpaper-shuffle/daemon.err.log</string>
+</dict>
+</plist>
+EOF
+
+# symlink the vicinae script command
 ln -sf ~/.dotfiles/scripts/shuffle-wallpaper.sh ~/.local/share/vicinae/scripts/shuffle-wallpaper.sh
 
 # load the wallpaper-shuffle daemon

@@ -3,4 +3,4 @@
 # @vicinae.title Shuffle Wallpaper
 # @vicinae.mode fullOutput
 
-/Users/jewaniuk/.dotfiles/scripts/wallpaper-shuffle-trigger.sh
+$HOME/.dotfiles/scripts/wallpaper-shuffle-trigger.sh
