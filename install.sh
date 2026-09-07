@@ -23,6 +23,10 @@ mkdir -p ~/.config/aerospace
 mkdir -p ~/.config/borders
 mkdir -p ~/.config/fastfetch
 
+# make configuration scripts executable
+chmod +x ~/.dotfiles/config/borders/bordersrc
+chmod +x ~/.dotfiles/config/sketchybar/plugins/aerospace.sh
+
 # create symlinks for configurations
 echo "creating symlinks..."
 ln -sf ~/.dotfiles/config/nvim ~/.config/nvim
@@ -34,6 +38,24 @@ ln -sf ~/.dotfiles/config/aerospace/aerospace.toml ~/.config/aerospace/aerospace
 ln -sf ~/.dotfiles/config/borders/bordersrc ~/.config/borders/bordersrc
 ln -sf ~/.dotfiles/config/fastfetch/config.jsonc ~/.config/fastfetch/config.jsonc
 ln -sf ~/.dotfiles/config/sketchybar ~/.config/sketchybar
+
+# create directories for wallpaper-shuffle state, launch agent, and vicinae script
+mkdir -p ~/.local/state/wallpaper-shuffle
+mkdir -p ~/Library/LaunchAgents
+mkdir -p ~/.local/share/vicinae/scripts
+
+# make wallpaper-shuffle scripts executable
+chmod +x ~/.dotfiles/scripts/wallpaper-shuffle.sh
+chmod +x ~/.dotfiles/scripts/wallpaper-shuffle-trigger.sh
+chmod +x ~/.dotfiles/scripts/shuffle-wallpaper.sh
+
+# symlink the launch agent and vicinae script command
+ln -sf ~/.dotfiles/launchagents/com.jewaniuk.wallpapershuffle.plist ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist
+ln -sf ~/.dotfiles/scripts/shuffle-wallpaper.sh ~/.local/share/vicinae/scripts/shuffle-wallpaper.sh
+
+# load the wallpaper-shuffle daemon
+launchctl bootout "gui/$(id -u)" ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist 2>/dev/null
+launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist
 
 # create file that disables top message on new terminal windows
 touch ~/.hushlogin

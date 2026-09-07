@@ -67,6 +67,7 @@ alt-equal = "balance-sizes"
 alt-shift-space = "layout floating tiling"  # toggle current window float/tile
 alt-slash = "layout tiles horizontal vertical"  # toggle split orientation
 alt-r = "mode resize"  # enter the resize submode
+alt-shift-w = "exec-and-forget /Users/jewaniuk/.dotfiles/scripts/wallpaper-shuffle-trigger.sh"
 
 # --- keybindings (resize submode) ---
 # a separate mode where hjkl resize instead of focus while it's active

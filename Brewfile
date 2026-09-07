@@ -55,3 +55,5 @@ cask "ghostty"
 cask "nikitabobko/tap/aerospace"
 # Focused launcher, replacement for spotlight
 cask "vicinae"
+# Wallpaper switching tool
+cask "desktoppr"
