@@ -43,8 +43,10 @@ brew "zsh-syntax-highlighting"
 # Command to fetch system information
 brew "fastfetch"
 # Border-drawing daemon for focused/unfocused window highlighting
+# Customizable control and status top bar
 tap "FelixKratz/formulae"
 brew "FelixKratz/formulae/borders"
+brew "FelixKratz/formulae/sketchybar"
 # Nerd font
 cask "font-fantasque-sans-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+CONFIG_DIR="$HOME/.config/sketchybar"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+##### bar appearance #####
+sketchybar --bar position=top height=32 color=0xff1c1e26
+default=(
+    padding_left=5
+    padding_right=5
+    icon.font="FantasqueSansM Nerd Font Mono:Bold:14.0"
+    label.font="FantasqueSansM Nerd Font Mono:Regular:13.0"
+    icon.color=0xffd5d8da
+    label.color=0xffd5d8da
+)
+sketchybar --default "${default[@]}"
+
+##### register the event aerospace triggers on workspace change #####
+sketchybar --add event aerospace_workspace_change
+
+##### one item per aerospace workspace #####
+for sid in $(aerospace list-workspaces --all); do
+    sketchybar --add item space.$sid left \
+        --subscribe space.$sid aerospace_workspace_change \
+        --set space.$sid \
+            icon="$sid" \
+            icon.padding_left=10 \
+            icon.padding_right=10 \
+            background.color=0x44666666 \
+            background.corner_radius=5 \
+            background.height=24 \
+            background.drawing=on \
+            label.drawing=off \
+            click_script="aerospace workspace $sid" \
+            script="$PLUGIN_DIR/aerospace.sh $sid"
+done
+
+##### force every item's script to run once so the right one is highlighted at launch #####
+sketchybar --update

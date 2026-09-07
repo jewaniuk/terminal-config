@@ -33,6 +33,7 @@ ln -sf ~/.dotfiles/config/zshrc ~/.zshrc
 ln -sf ~/.dotfiles/config/aerospace/aerospace.toml ~/.config/aerospace/aerospace.toml
 ln -sf ~/.dotfiles/config/borders/bordersrc ~/.config/borders/bordersrc
 ln -sf ~/.dotfiles/config/fastfetch/config.jsonc ~/.config/fastfetch/config.jsonc
+ln -sf ~/.dotfiles/config/sketchybar ~/.config/sketchybar
 
 # create file that disables top message on new terminal windows
 touch ~/.hushlogin
