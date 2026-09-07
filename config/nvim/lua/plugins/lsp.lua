@@ -51,6 +51,17 @@ return {
                 }
             }
 
+            -- Rust Analyzer Configuration
+            vim.lsp.config.rust_analyzer = {
+                settings = {
+                    ["rust-analyzer"] = {
+                        cargo = {
+                            features = "all"
+                        },
+                    },
+                },
+            }
+
             -- Lua Language Server Configuration
             vim.lsp.config.lua_ls = {
                 settings = {
