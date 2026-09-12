@@ -15,6 +15,7 @@ keybind = cmd+shift+j=goto_split:down
 keybind = cmd+shift+k=goto_split:up
 keybind = cmd+shift+l=goto_split:right
 
+keybind = alt+shift+t=toggle_background_opacity
 keybind = cmd+t=new_tab
 keybind = cmd+x=close_surface
 
