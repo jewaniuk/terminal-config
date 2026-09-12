@@ -7,30 +7,21 @@ WALLPAPER_DIR="$HOME/wallpapers"
 STATE_DIR="$HOME/.local/state/wallpaper-shuffle"
 PID_FILE="$STATE_DIR/daemon.pid"
 INTERVAL=1800  # s
+CURRENT_INDEX=-1
 
 mkdir -p "$STATE_DIR"
 echo $$ > "$PID_FILE"
 
 pick_and_set_wallpaper() {
-    local current pick
-    current=$(/usr/local/bin/desktoppr 2>/dev/null | head -n1)
-
-    local candidates=()
+    local wallpapers=()
     while IFS= read -r -d '' f; do
-        [ "$f" != "$current" ] && candidates+=("$f")
-    done < <(find "$WALLPAPER_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.heic' \) -print0)
+        wallpapers+=("$f")
+    done < <(find "$WALLPAPER_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.heic' \) -print0 | sort -z)
 
-    # only one wallpaper total: allow repeating it rather than finding nothing
-    if [ "${#candidates[@]}" -eq 0 ]; then
-        while IFS= read -r -d '' f; do
-            candidates+=("$f")
-        done < <(find "$WALLPAPER_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.heic' \) -print0)
-    fi
+    [ "${#wallpapers[@]}" -eq 0 ] && { echo "no wallpapers found in $WALLPAPER_DIR" >&2; return 1; }
 
-    [ "${#candidates[@]}" -eq 0 ] && { echo "no wallpapers found in $WALLPAPER_DIR" >&2; return 1; }
-
-    pick="${candidates[$(jot -r 1 0 $((${#candidates[@]} - 1)))]}"
-        /usr/local/bin/desktoppr "$pick"
+    CURRENT_INDEX=$(( (CURRENT_INDEX + 1) % ${#wallpapers[@]} ))
+    /usr/local/bin/desktoppr "${wallpapers[$CURRENT_INDEX]}"
 }
 
 SLEEP_PID=""

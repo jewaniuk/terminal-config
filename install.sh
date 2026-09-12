@@ -50,6 +50,7 @@ chmod +x ~/.dotfiles/scripts/wallpaper-shuffle-trigger.sh
 chmod +x ~/.dotfiles/scripts/shuffle-wallpaper.sh
 
 # generate the wallpaper-shuffle LaunchAgent for this machine
+rm -f ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist
 cat > ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
