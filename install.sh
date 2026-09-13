@@ -8,6 +8,8 @@ fi
 
 # install all Brewfile dependencies
 echo "installing dependencies..."
+brew tap FelixKratz/formulae
+brew trust FelixKratz/formulae
 brew bundle --file=~/.dotfiles/Brewfile
 
 # install google antigravity cli
