@@ -24,6 +24,7 @@ mkdir -p ~/.config/gitui
 mkdir -p ~/.config/aerospace
 mkdir -p ~/.config/borders
 mkdir -p ~/.config/fastfetch
+mkdir -p ~/.config/vicinae
 
 # make configuration scripts executable
 chmod +x ~/.dotfiles/config/borders/bordersrc
@@ -40,6 +41,9 @@ ln -sf ~/.dotfiles/config/aerospace/aerospace.toml ~/.config/aerospace/aerospace
 ln -sf ~/.dotfiles/config/borders/bordersrc ~/.config/borders/bordersrc
 ln -sf ~/.dotfiles/config/fastfetch/config.jsonc ~/.config/fastfetch/config.jsonc
 ln -sf ~/.dotfiles/config/sketchybar ~/.config/sketchybar
+ln -sf ~/.dotfiles/config/vicinae/settings.json ~/.config/vicinae/settings.json
+mkdir -p ~/.local/share/vicinae/shortcuts
+ln -sf ~/.dotfiles/config/vicinae/shortcuts.json ~/.local/share/vicinae/shortcuts/shortcuts.json
 
 # create directories for wallpaper-shuffle state, launch agent, and vicinae script
 mkdir -p ~/.local/state/wallpaper-shuffle
