@@ -24,7 +24,7 @@ return {
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter").install({
-                "python", "rust", "arduino", "c", "cpp", "lua", "vim", "vimdoc", "zig", "odin"
+                "python", "rust", "arduino", "c", "cpp", "lua", "vim", "vimdoc", "zig", "odin", "typst"
             })
         end
     },

@@ -2,6 +2,7 @@
 # ENV & PATH
 # =============================================================================
 export PATH="/opt/homebrew/bin:$PATH"
+[ -f ~/.config/secrets.zsh ] && source ~/.config/secrets.zsh
 
 # make neovim the default editor for everything (git commits, etc.)
 export EDITOR="nvim"
@@ -29,6 +30,16 @@ alias ll="ls -lhG"             # detailed list view
 # =============================================================================
 # CUSTOM FUNCTIONS
 # =============================================================================
+# recompile a typst document to a pdf every time it is saved (view it with: tdf file.pdf)
+typw() {
+    typst watch "$1"
+}
+
+# serve a markdown file as a reveal.js slideshow in the browser, reloading on save
+slides() {
+    npx reveal-md "$1" -w
+}
+
 # automatically run git fetch only when entering the root of a git repo
 chpwd() {
     if [ "$(git rev-parse --show-cdup 2>/dev/null)" = "" ] && git rev-parse --is-inside-work-tree &>/dev/null; then

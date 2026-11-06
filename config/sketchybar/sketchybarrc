@@ -19,11 +19,15 @@ sketchybar --default "${default[@]}"
 sketchybar --add event aerospace_workspace_change
 
 ##### one item per aerospace workspace #####
-for sid in $(aerospace list-workspaces --all); do
+# listed explicitly because list-workspaces --all only returns non-empty workspaces
+for sid in {1..10}; do
+    # workspace 10 is reached with the 0 key, so label it 0
+    label_icon=$sid
+    [ "$sid" = "10" ] && label_icon=0
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid \
-            icon="$sid" \
+            icon="$label_icon" \
             icon.padding_left=10 \
             icon.padding_right=10 \
             background.color=0x44666666 \

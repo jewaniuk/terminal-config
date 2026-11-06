@@ -26,8 +26,12 @@ brew "ripgrep"
 brew "starship"
 # Generate scripting interfaces to C/C++ code
 brew "swig"
+# TUI-based PDF viewer
+brew "tdf"
 # Parser generator tool
 brew "tree-sitter-cli"
+# Markup-based typesetting system
+brew "typst"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
 # Simple terminal image viewer written in Rust

@@ -84,6 +84,16 @@ ln -sf ~/.dotfiles/scripts/shuffle-wallpaper.sh ~/.local/share/vicinae/scripts/s
 launchctl bootout "gui/$(id -u)" ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist 2>/dev/null
 launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/com.jewaniuk.wallpapershuffle.plist
 
+# symlink command-line helper scripts onto the path
+mkdir -p ~/.local/bin
+chmod +x ~/.dotfiles/scripts/figw
+ln -sf ~/.dotfiles/scripts/figw ~/.local/bin/figw
+
+# secrets live outside the repo and are sourced by zshrc
+if [ ! -f ~/.config/secrets.zsh ]; then
+    echo "reminder: create ~/.config/secrets.zsh (chmod 600) with your exported tokens"
+fi
+
 # create file that disables top message on new terminal windows
 touch ~/.hushlogin
 

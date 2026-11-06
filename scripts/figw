@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# re-run a matplotlib script and redraw its figure in the terminal every time the script is saved
+# usage: figw script.py [image.png]
+# the script must save its figure to image.png (defaults to the script name with a .png extension)
+
+script="$1"
+image="${2:-${script%.py}.png}"
+
+if [ -z "$script" ]; then
+    echo "usage: figw script.py [image.png]" >&2
+    exit 1
+fi
+
+echo "$script" | entr -n -c sh -c 'python "$1" && viu "$2"' _ "$script" "$image"

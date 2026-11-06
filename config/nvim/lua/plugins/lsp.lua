@@ -11,7 +11,7 @@ return {
                 ensure_installed = {
                     "pyright", "rust_analyzer", "clangd",
                     "arduino_language_server", "zls", "ols",
-                    "lua_ls", "marksman",
+                    "lua_ls", "marksman", "tinymist",
                 }
             })
 
@@ -77,7 +77,7 @@ return {
             local servers = {
                 "pyright", "rust_analyzer", "clangd",
                 "arduino_language_server", "zls", "ols",
-                "lua_ls", "marksman",
+                "lua_ls", "marksman", "tinymist",
             }
 
             for _, lsp in ipairs(servers) do
