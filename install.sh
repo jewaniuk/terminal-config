@@ -93,6 +93,15 @@ mkdir -p ~/.local/bin
 chmod +x ~/.dotfiles/scripts/figw
 ln -sf ~/.dotfiles/scripts/figw ~/.local/bin/figw
 
+# personal task board: clone repo and check gh token scopes
+if gh auth status &>/dev/null; then
+    [ -d ~/tasks ] || gh repo clone jewaniuk/tasks ~/tasks
+    gh auth status 2>&1 | grep -q "'project'" \
+        || echo "reminder: run 'gh auth refresh -s project' for the tasks board"
+else
+    echo "reminder: run 'gh auth login -s project', then re-run install.sh to clone ~/tasks"
+fi
+
 # secrets live outside the repo and are sourced by zshrc
 if [ ! -f ~/.config/secrets.zsh ]; then
     echo "reminder: create ~/.config/secrets.zsh (chmod 600) with your exported tokens"
