@@ -10,6 +10,8 @@ brew "fzf"
 brew "gcc"
 # Distributed revision control system
 brew "git"
+# GitHub command-line tool
+brew "gh"
 # Blazing fast terminal-ui for git written in rust
 brew "gitui"
 # LLVM's OpenMP runtime library
