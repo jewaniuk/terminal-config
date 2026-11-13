@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+
+# compact read-only view of the task board (github project #4, repo jewaniuk/tasks)
+# usage: todo next | inbox | projects | project <n>
+# output is a table with a header row and aligned columns
+
+owner="jewaniuk"
+repo="tasks"
+project=4
+
+usage() {
+    cat >&2 <<'EOF'
+usage: todo <command>
+  next          tasks that are next or doing
+  inbox         tasks waiting to be triaged
+  projects      all open projects, with their next step
+  project <n>   one project's steps in order (n is the issue number from `todo projects`)
+EOF
+    exit 1
+}
+
+# print tab separated rows (header first) as an aligned table
+table() {
+    column -t -s $'\t'
+}
+
+# board status of every issue as a json map {"number": "status"}
+board_statuses() {
+    gh project item-list "$project" --owner "$owner" --limit 200 --format json --jq \
+        '[.items[] | {key: (.content.number | tostring), value: (.status // "-")}] | from_entries'
+}
+
+# list board items whose status matches a regex ($1), ordered by a jq filter ($2)
+list_status() {
+    {
+        printf '#\tSTATUS\tAREA\tPRI\tTARGET\tTITLE\n'
+        gh project item-list "$project" --owner "$owner" --limit 200 --format json --jq \
+            "[.items[] | select((.status // \"\") | test(\"$1\"))] | $2 | .[] | [(\"#\" + (.content.number | tostring)), .status, (.area // \"-\"), (.priority // \"-\"), (.target // \"-\"), .title] | @tsv"
+    } | table
+}
+
+# list open projects (issues labelled project) with their status and next sub-issue
+list_projects() {
+    local statuses
+    statuses=$(board_statuses)
+    {
+        printf '#\tSTATUS\tTITLE\tNEXT STEP\n'
+        gh api graphql -f query='
+            query($owner: String!, $repo: String!) {
+                repository(owner: $owner, name: $repo) {
+                    issues(first: 50, states: OPEN, labels: ["project"]) {
+                        nodes { number title subIssues(first: 50) { nodes { number title state } } }
+                    }
+                }
+            }' -f owner="$owner" -f repo="$repo" --jq '.data.repository.issues.nodes' |
+            jq -r --argjson st "$statuses" '
+                .[] | . as $p
+                | ([$p.subIssues.nodes[] | select($st[.number | tostring] == "next")][0]) as $n
+                | [("#" + ($p.number | tostring)), ($st[$p.number | tostring] // "-"), $p.title,
+                   (if $n then "#" + ($n.number | tostring) + " " + $n.title else "-" end)] | @tsv'
+    } | table
+}
+
+# list a project's sub-issues in chain order, with board status and open blockers
+list_project() {
+    local number="$1"
+    local statuses
+    statuses=$(board_statuses)
+    gh api graphql -f query='
+        query($owner: String!, $repo: String!, $number: Int!) {
+            repository(owner: $owner, name: $repo) {
+                issue(number: $number) {
+                    title
+                    subIssues(first: 50) {
+                        nodes {
+                            number title state
+                            blockedBy(first: 10) { nodes { number state } }
+                        }
+                    }
+                }
+            }
+        }' -f owner="$owner" -f repo="$repo" -F number="$number" --jq '.data.repository.issue' |
+        jq -r --argjson st "$statuses" '
+            # order sub-issues by the blocked-by chain: emit the first one whose blockers are all emitted
+            def chain_order:
+                . as $all
+                | ([$all[].number]) as $nums
+                | reduce range(0; $all | length) as $i ({out: [], done: []};
+                    . as $s
+                    | [$all[] | select(.number as $n | $s.done | index($n) | not)] as $left
+                    | ([$left[] | select([.blockedBy.nodes[].number | select(. as $b | $nums | index($b)) | select(. as $b | $s.done | index($b) | not)] | length == 0)] + $left | .[0]) as $pick
+                    | .out += [$pick] | .done += [$pick.number])
+                | .out[];
+            "project: " + .title,
+            "",
+            "#\tSTATUS\tTITLE\tBLOCKED BY",
+            (.subIssues.nodes | chain_order |
+                [("#" + (.number | tostring)),
+                 (if .state == "CLOSED" then "closed" else ($st[.number | tostring] // "-") end),
+                 .title,
+                 (([.blockedBy.nodes[] | select(.state == "OPEN") | "#" + (.number | tostring)]) | if length > 0 then join(", ") else "-" end)] | @tsv)' |
+        {
+            # first two lines are the plain heading, the rest is the table
+            read -r heading
+            read -r blank
+            echo "$heading"
+            echo "$blank"
+            table
+        }
+}
+
+case "$1" in
+    next)
+        # highest priority first, then earliest target date, tasks without one last
+        list_status '^(next|doing)$' 'sort_by([({"!!!": 0, "!!": 1, "!": 2, "-": 3}[.priority // ""] // 4), (.target // "9999")])'
+        ;;
+    inbox) list_status '^inbox$' '.' ;;
+    projects) list_projects ;;
+    project)
+        [ -n "$2" ] || usage
+        list_project "$2"
+        ;;
+    *) usage ;;
+esac

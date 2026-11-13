@@ -1,0 +1,17 @@
+# reads the .ics files that vdirsyncer syncs
+
+[calendars]
+
+[[icloud]]
+path = ~/.local/share/vdirsyncer/calendars/*
+type = discover
+
+[default]
+default_calendar = Work
+
+[locale]
+timeformat = %H:%M
+dateformat = %Y-%m-%d
+longdateformat = %Y-%m-%d
+datetimeformat = %Y-%m-%d %H:%M
+longdatetimeformat = %Y-%m-%d %H:%M

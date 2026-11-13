@@ -1,0 +1,26 @@
+# two-way sync between icloud caldav and local .ics files that khal reads
+# credentials come from ICLOUD_USER and ICLOUD_APP_PASSWORD in ~/.config/secrets.zsh
+# first run: vdirsyncer discover icloud && vdirsyncer sync
+
+[general]
+status_path = "~/.local/share/vdirsyncer/status/"
+
+[pair icloud]
+a = "icloud_local"
+b = "icloud_remote"
+collections = ["from a", "from b"]
+metadata = ["color", "displayname"]
+conflict_resolution = "b wins"
+
+[storage icloud_local]
+type = "filesystem"
+path = "~/.local/share/vdirsyncer/calendars/"
+fileext = ".ics"
+
+[storage icloud_remote]
+type = "caldav"
+url = "https://caldav.icloud.com/"
+username.fetch = ["command", "printenv", "ICLOUD_USER"]
+password.fetch = ["command", "printenv", "ICLOUD_APP_PASSWORD"]
+# events only, skips reminders
+item_types = ["VEVENT"]

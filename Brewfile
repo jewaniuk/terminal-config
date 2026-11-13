@@ -14,6 +14,8 @@ brew "git"
 brew "gh"
 # Blazing fast terminal-ui for git written in rust
 brew "gitui"
+
+brew "khal"
 # LLVM's OpenMP runtime library
 brew "libomp"
 # Ambitious Vim-fork focused on extensibility and agility
@@ -36,6 +38,8 @@ brew "tree-sitter-cli"
 brew "typst"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
+
+brew "vdirsyncer"
 # Simple terminal image viewer written in Rust
 brew "viu"
 # A smarter cd command for navigating directories in the terminal
