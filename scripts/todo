@@ -11,7 +11,7 @@ project=4
 usage() {
     cat >&2 <<'EOF'
 usage: todo <command>
-  next          tasks that are next or doing, by project priority
+  next          next or doing tasks in active projects, by category and project priority
   inbox         tasks waiting to be triaged
   projects      open projects by category and priority, with their doing and next steps
   project <n>   one project's steps in order (n is the issue number from `todo projects`)
@@ -45,22 +45,31 @@ open_issues() {
         }' -f owner="$owner" -f repo="$repo" --jq '.data.repository.issues.nodes[]' | jq -s '.'
 }
 
-# tasks that are next or doing, ordered by their project's priority, doing before next
+# tasks that are next or doing in projects that are next or doing, one table per category,
+# ordered by project priority, then doing before next
 list_next() {
-    local fields
+    local fields rows cat
     fields=$(board_fields)
-    {
-        printf 'PROJECT\tPRI\t#\tSTATUS\tKIND\tEFFORT\tDUE\tTITLE\n'
-        open_issues | jq -r --argjson f "$fields" '
-            def rank: {"!!!": 0, "!!": 1, "!": 2, "-": 3}[.] // 4;
-            [.[] | select([.labels.nodes[].name] | index("project") | not)
-             | ($f[.number | tostring]) as $t
-             | select($t and ($t.status | test("^(next|doing)$")))
-             | (if .parent then $f[.parent.number | tostring] else null end // {}) as $p
-             | {proj: (.parent.title // "-"), pri: ($p.priority // "-"), n: .number, t: $t, title: .title}]
-            | sort_by([(.pri | rank), .proj, (if .t.status == "doing" then 0 else 1 end)])
-            | .[] | [.proj, .pri, ("#" + (.n | tostring)), .t.status, .t.kind, .t.effort, .t.due, .title] | @tsv'
-    } | table
+    rows=$(open_issues | jq -r --argjson f "$fields" '
+        def rank: {"!!!": 0, "!!": 1, "!": 2, "-": 3}[.] // 4;
+        def active: test("^(next|doing)$");
+        [.[] | select(.parent != null)
+         | select([.labels.nodes[].name] | index("project") | not)
+         | ($f[.number | tostring]) as $t
+         | ($f[.parent.number | tostring]) as $p
+         | select($t and $p and ($t.status | active) and ($p.status | active))
+         | {cat: $p.category, proj: .parent.title, pri: $p.priority, n: .number, t: $t, title: .title}]
+        | sort_by([.cat, (.pri | rank), (if .t.status == "doing" then 0 else 1 end), .proj])
+        | .[] | [.cat, .proj, .pri, ("#" + (.n | tostring)), .t.status, .t.kind, .t.effort, .t.due, .title] | @tsv')
+    [ -n "$rows" ] || return 0
+    for cat in $(cut -f1 <<<"$rows" | uniq); do
+        echo "$cat"
+        {
+            printf 'PROJECT\tPRI\t#\tSTATUS\tKIND\tEFFORT\tDUE\tTITLE\n'
+            awk -F '\t' -v c="$cat" '$1 == c' <<<"$rows" | cut -f2-
+        } | table
+        echo
+    done
 }
 
 # tasks waiting to be triaged
