@@ -1,6 +1,7 @@
 # two-way sync between icloud caldav and local .ics files that khal reads
 # credentials come from ICLOUD_USER and ICLOUD_APP_PASSWORD in ~/.config/secrets.zsh
-# first run: vdirsyncer discover icloud && vdirsyncer sync
+# first run, after install.sh has linked this file: vdirsyncer discover icloud && vdirsyncer sync && vdirsyncer metasync
+# (metasync pulls the calendar names that khal needs for default_calendar)
 
 [general]
 status_path = "~/.local/share/vdirsyncer/status/"
