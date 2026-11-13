@@ -11,9 +11,9 @@ project=4
 usage() {
     cat >&2 <<'EOF'
 usage: todo <command>
-  next          tasks that are next or doing
+  next          tasks that are next or doing, by project priority
   inbox         tasks waiting to be triaged
-  projects      all open projects, with their next step
+  projects      open projects by category and priority, with their doing and next steps
   project <n>   one project's steps in order (n is the issue number from `todo projects`)
 EOF
     exit 1
@@ -24,48 +24,85 @@ table() {
     column -t -s $'\t'
 }
 
-# board status of every issue as a json map {"number": "status"}
-board_statuses() {
-    gh project item-list "$project" --owner "$owner" --limit 200 --format json --jq \
-        '[.items[] | {key: (.content.number | tostring), value: (.status // "-")}] | from_entries'
+# board fields of every item as a json map {"number": {status, priority, category, kind, effort, due}}
+board_fields() {
+    gh project item-list "$project" --owner "$owner" --limit 500 --format json --jq \
+        '[.items[] | {key: (.content.number | tostring),
+          value: {status: (.status // "-"), priority: (.priority // "-"), category: (.category // "-"),
+                  kind: (.kind // "-"), effort: (.effort // "-"), due: (.due // "-")}}] | from_entries'
 }
 
-# list board items whose status matches a regex ($1), ordered by a jq filter ($2)
-list_status() {
+# every open issue as a json array of {number, title, parent, labels}, following pagination
+open_issues() {
+    gh api graphql --paginate -f query='
+        query($owner: String!, $repo: String!, $endCursor: String) {
+            repository(owner: $owner, name: $repo) {
+                issues(first: 100, states: OPEN, after: $endCursor) {
+                    pageInfo { hasNextPage endCursor }
+                    nodes { number title parent { number title } labels(first: 10) { nodes { name } } }
+                }
+            }
+        }' -f owner="$owner" -f repo="$repo" --jq '.data.repository.issues.nodes[]' | jq -s '.'
+}
+
+# tasks that are next or doing, ordered by their project's priority, doing before next
+list_next() {
+    local fields
+    fields=$(board_fields)
     {
-        printf '#\tSTATUS\tAREA\tPRI\tTARGET\tTITLE\n'
-        gh project item-list "$project" --owner "$owner" --limit 200 --format json --jq \
-            "[.items[] | select((.status // \"\") | test(\"$1\"))] | $2 | .[] | [(\"#\" + (.content.number | tostring)), .status, (.area // \"-\"), (.priority // \"-\"), (.target // \"-\"), .title] | @tsv"
+        printf 'PROJECT\tPRI\t#\tSTATUS\tKIND\tEFFORT\tDUE\tTITLE\n'
+        open_issues | jq -r --argjson f "$fields" '
+            def rank: {"!!!": 0, "!!": 1, "!": 2, "-": 3}[.] // 4;
+            [.[] | select([.labels.nodes[].name] | index("project") | not)
+             | ($f[.number | tostring]) as $t
+             | select($t and ($t.status | test("^(next|doing)$")))
+             | (if .parent then $f[.parent.number | tostring] else null end // {}) as $p
+             | {proj: (.parent.title // "-"), pri: ($p.priority // "-"), n: .number, t: $t, title: .title}]
+            | sort_by([(.pri | rank), .proj, (if .t.status == "doing" then 0 else 1 end)])
+            | .[] | [.proj, .pri, ("#" + (.n | tostring)), .t.status, .t.kind, .t.effort, .t.due, .title] | @tsv'
     } | table
 }
 
-# list open projects (issues labelled project) with their status and next sub-issue
-list_projects() {
-    local statuses
-    statuses=$(board_statuses)
+# tasks waiting to be triaged
+list_inbox() {
     {
-        printf '#\tSTATUS\tTITLE\tNEXT STEP\n'
+        printf '#\tTITLE\n'
+        gh project item-list "$project" --owner "$owner" --limit 500 --format json --jq \
+            '.items[] | select(.status == "inbox") | [("#" + (.content.number | tostring)), .title] | @tsv'
+    } | table
+}
+
+# list open projects (issues labelled project) by category and priority, with their doing and next sub-issues
+list_projects() {
+    local fields
+    fields=$(board_fields)
+    {
+        printf 'CATEGORY\tPRI\t#\tSTATUS\tTITLE\tDOING\tNEXT\n'
         gh api graphql -f query='
             query($owner: String!, $repo: String!) {
                 repository(owner: $owner, name: $repo) {
-                    issues(first: 50, states: OPEN, labels: ["project"]) {
-                        nodes { number title subIssues(first: 50) { nodes { number title state } } }
+                    issues(first: 100, states: OPEN, labels: ["project"]) {
+                        nodes { number title subIssues(first: 100) { nodes { number title state } } }
                     }
                 }
             }' -f owner="$owner" -f repo="$repo" --jq '.data.repository.issues.nodes' |
-            jq -r --argjson st "$statuses" '
-                .[] | . as $p
-                | ([$p.subIssues.nodes[] | select($st[.number | tostring] == "next")][0]) as $n
-                | [("#" + ($p.number | tostring)), ($st[$p.number | tostring] // "-"), $p.title,
-                   (if $n then "#" + ($n.number | tostring) + " " + $n.title else "-" end)] | @tsv'
+            jq -r --argjson f "$fields" '
+                def rank: {"!!!": 0, "!!": 1, "!": 2, "-": 3}[.] // 4;
+                def step($s): [.subIssues.nodes[] | select($f[.number | tostring].status == $s)][0]
+                    | if . then "#" + (.number | tostring) + " " + .title else "-" end;
+                [.[] | ($f[.number | tostring] // {}) as $p
+                 | {cat: ($p.category // "-"), pri: ($p.priority // "-"), n: .number, status: ($p.status // "-"),
+                    title: .title, doing: step("doing"), next: step("next")}]
+                | sort_by([.cat, (.pri | rank), .title])
+                | .[] | [.cat, .pri, ("#" + (.n | tostring)), .status, .title, .doing, .next] | @tsv'
     } | table
 }
 
 # list a project's sub-issues in chain order, with board status and open blockers
 list_project() {
     local number="$1"
-    local statuses
-    statuses=$(board_statuses)
+    local fields
+    fields=$(board_fields)
     gh api graphql -f query='
         query($owner: String!, $repo: String!, $number: Int!) {
             repository(owner: $owner, name: $repo) {
@@ -80,7 +117,7 @@ list_project() {
                 }
             }
         }' -f owner="$owner" -f repo="$repo" -F number="$number" --jq '.data.repository.issue' |
-        jq -r --argjson st "$statuses" '
+        jq -r --argjson f "$fields" '
             # order sub-issues by the blocked-by chain: emit the first one whose blockers are all emitted
             def chain_order:
                 . as $all
@@ -96,7 +133,7 @@ list_project() {
             "#\tSTATUS\tTITLE\tBLOCKED BY",
             (.subIssues.nodes | chain_order |
                 [("#" + (.number | tostring)),
-                 (if .state == "CLOSED" then "closed" else ($st[.number | tostring] // "-") end),
+                 (if .state == "CLOSED" then "closed" else ($f[.number | tostring].status // "-") end),
                  .title,
                  (([.blockedBy.nodes[] | select(.state == "OPEN") | "#" + (.number | tostring)]) | if length > 0 then join(", ") else "-" end)] | @tsv)' |
         {
@@ -110,11 +147,8 @@ list_project() {
 }
 
 case "$1" in
-    next)
-        # highest priority first, then earliest target date, tasks without one last
-        list_status '^(next|doing)$' 'sort_by([({"!!!": 0, "!!": 1, "!": 2, "-": 3}[.priority // ""] // 4), (.target // "9999")])'
-        ;;
-    inbox) list_status '^inbox$' '.' ;;
+    next) list_next ;;
+    inbox) list_inbox ;;
     projects) list_projects ;;
     project)
         [ -n "$2" ] || usage
