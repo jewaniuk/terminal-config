@@ -45,7 +45,7 @@ open_issues() {
         }' -f owner="$owner" -f repo="$repo" --jq '.data.repository.issues.nodes[]' | jq -s '.'
 }
 
-# tasks that are next or doing in projects that are next or doing, one table per category,
+# tasks that are next or doing in projects that are doing, one table per category,
 # ordered by project priority, then doing before next
 list_next() {
     local fields rows cat
@@ -57,7 +57,7 @@ list_next() {
          | select([.labels.nodes[].name] | index("project") | not)
          | ($f[.number | tostring]) as $t
          | ($f[.parent.number | tostring]) as $p
-         | select($t and $p and ($t.status | active) and ($p.status | active))
+         | select($t and $p and ($t.status | active) and ($p.status == "doing"))
          | {cat: $p.category, proj: .parent.title, pri: $p.priority, n: .number, t: $t, title: .title}]
         | sort_by([.cat, (.pri | rank), (if .t.status == "doing" then 0 else 1 end), .proj])
         | .[] | [.cat, .proj, .pri, ("#" + (.n | tostring)), .t.status, .t.kind, .t.effort, .t.due, .title] | @tsv')
