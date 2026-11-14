@@ -40,6 +40,11 @@ slides() {
     npx reveal-md "$1" -w
 }
 
+# open a markdown file anywhere in obsidian, even if the app is closed (the file must already exist)
+md() {
+    open -a Obsidian "$1"
+}
+
 # automatically run git fetch only when entering the root of a git repo
 chpwd() {
     if [ "$(git rev-parse --show-cdup 2>/dev/null)" = "" ] && git rev-parse --is-inside-work-tree &>/dev/null; then
