@@ -9,7 +9,9 @@ status_path = "~/.local/share/vdirsyncer/status/"
 [pair icloud]
 a = "icloud_local"
 b = "icloud_remote"
-collections = ["from a", "from b"]
+# explicit list so the empty Reminders calendar is skipped (collection ids, not display names)
+# ids in order: home, work, Teaching, Shopping, School, Extracurriculars
+collections = ["home", "work", "0A4FE029-4519-4ABA-8933-CA3A7FD09B03", "44AB1E37-BDAA-491D-965E-D7FAA744F4E5", "479FB048-BC75-4D76-B7E1-C22A1F301598", "6F9FB66E-23A8-43FD-BFBD-73E69623AB57"]
 metadata = ["color", "displayname"]
 conflict_resolution = "b wins"
 
