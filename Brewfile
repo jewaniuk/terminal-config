@@ -67,3 +67,5 @@ cask "nikitabobko/tap/aerospace"
 cask "vicinae"
 # Wallpaper switching tool
 cask "desktoppr"
+# Reference manager
+cask "zotero"

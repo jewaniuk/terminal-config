@@ -51,6 +51,9 @@
             },
             "md.obsidian": {
                "shortcut": "alt+O"
+            },
+            "org.zotero.zotero": {
+               "shortcut": "alt+Z"
             }
          }
       }
