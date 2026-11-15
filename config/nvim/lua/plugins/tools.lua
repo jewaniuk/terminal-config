@@ -24,9 +24,17 @@ return {
         build = ":TSUpdate",
         config = function()
             require("nvim-treesitter").install({
-                "python", "rust", "arduino", "c", "cpp", "lua", "vim", "vimdoc", "zig", "odin", "typst"
+                "python", "rust", "arduino", "c", "cpp", "lua", "vim", "vimdoc", "zig", "odin", "typst",
+                "typescript", "javascript", "html", "css", "svelte", "json"
             })
         end
+    },
+
+    -- Auto-Closing and Renaming HTML/Svelte Tags
+    {
+        "windwp/nvim-ts-autotag",
+        event = "InsertEnter",
+        opts = {},
     },
 
     -- Python Indentation

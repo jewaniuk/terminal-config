@@ -12,6 +12,7 @@ return {
                     "pyright", "rust_analyzer", "clangd",
                     "arduino_language_server", "zls", "ols",
                     "lua_ls", "marksman", "tinymist",
+                    "ts_ls", "svelte", "html", "cssls",
                 }
             })
 
@@ -78,6 +79,7 @@ return {
                 "pyright", "rust_analyzer", "clangd",
                 "arduino_language_server", "zls", "ols",
                 "lua_ls", "marksman", "tinymist",
+                "ts_ls", "svelte", "html", "cssls",
             }
 
             for _, lsp in ipairs(servers) do

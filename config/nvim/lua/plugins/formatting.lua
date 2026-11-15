@@ -9,6 +9,14 @@ return {
                 python = { "ruff_organize_imports", "ruff_format" },
                 -- Uses standard rustfmt (matches `cargo fmt`)
                 rust = { "rustfmt" },
+                -- Uses a project-local prettier and config when present, else the Mason one
+                html = { "prettier" },
+                css = { "prettier" },
+                typescript = { "prettier" },
+                javascript = { "prettier" },
+                json = { "prettier" },
+                -- svelte is left out on purpose: the svelte language server formats it
+                -- with its bundled prettier-plugin-svelte (via lsp_format = "fallback")
             },
 
             -- Enable format on save
@@ -27,5 +35,14 @@ return {
                 desc = "Format buffer manually",
             },
         },
-    }
+    },
+
+    -- Installs formatters (not LSPs) through Mason on a fresh machine
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        opts = {
+            ensure_installed = { "prettier" },
+        },
+    },
 }
