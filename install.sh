@@ -99,41 +99,6 @@ chmod +x ~/.dotfiles/scripts/figw
 ln -sf ~/.dotfiles/scripts/figw ~/.local/bin/figw
 chmod +x ~/.dotfiles/scripts/todo
 ln -sf ~/.dotfiles/scripts/todo ~/.local/bin/todo
-chmod +x ~/.dotfiles/scripts/daily-brief
-
-# the always-on Mac Mini writes the daily brief into the tasks repo every morning at 6:00
-if [ "$(hostname -s)" = "Bigger-Jackass" ]; then
-    mkdir -p ~/.local/state/daily-brief
-    rm -f ~/Library/LaunchAgents/com.jewaniuk.dailybrief.plist
-    cat > ~/Library/LaunchAgents/com.jewaniuk.dailybrief.plist <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.jewaniuk.dailybrief</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>/bin/bash</string>
-        <string>$HOME/.dotfiles/scripts/daily-brief</string>
-    </array>
-    <key>StartCalendarInterval</key>
-    <dict>
-        <key>Hour</key>
-        <integer>6</integer>
-        <key>Minute</key>
-        <integer>0</integer>
-    </dict>
-    <key>StandardOutPath</key>
-    <string>$HOME/.local/state/daily-brief/brief.log</string>
-    <key>StandardErrorPath</key>
-    <string>$HOME/.local/state/daily-brief/brief.err.log</string>
-</dict>
-</plist>
-EOF
-    launchctl bootout "gui/$(id -u)" ~/Library/LaunchAgents/com.jewaniuk.dailybrief.plist 2>/dev/null
-    launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/com.jewaniuk.dailybrief.plist
-fi
 
 # personal task board: clone repo and check gh token scopes
 if gh auth status &>/dev/null; then

@@ -4,21 +4,9 @@ Feedback after the first days of using the task system (GitHub Project #4 + `~/t
 
 Written 2026-11-13.
 
-## Daily brief needs a rework
+## Daily brief (removed 2026-11-15)
 
-Current setup: `scripts/daily-brief` runs at 6:00 on the Mac Mini (`launchd`, `com.jewaniuk.dailybrief`) and overwrites the body of pinned issue #13 in `jewaniuk/tasks`.
-
-Problems:
-
-- Hard to get to on mobile. It takes too many taps to reach the issue in the GitHub app.
-- Once it's open, it's hard to read. The tables and layout don't work on a phone screen.
-- The content isn't useful as it stands, so I don't act on it.
-
-To make it worth keeping it needs real work on delivery, formatting and features. Ideas:
-
-- Deliver it as a push-style message instead of an issue I have to go find: a text message (iMessage/SMS) or a Slack message.
-- Write it for a phone screen: short lines, no wide tables, the most important items first.
-- Decide what it should do for me (what I need to know or decide at 6:00) before adding more sections.
+The 6:00 brief (`scripts/daily-brief`, `launchd` job `com.jewaniuk.dailybrief` on the Mac Mini, pinned issue #13 in `jewaniuk/tasks`) was hard to reach and read on a phone and its content wasn't useful. It was removed. The Next page of `attask` replaces it. See `~/tasks/docs/decisions.md`.
 
 ## Board views: keep "next", replace "board"
 
